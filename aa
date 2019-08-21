@@ -1,0 +1,14 @@
+###############circle
+Xc = runif(1,26,32)
+Yc = runif(1,26,32)
+r0 = runif(1,3,10)
+n = rnorm(1,1,1)
+rr = r0/(1+exp(-n))
+f.size$circle = f.size$gdie
+f.size$circle[sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2) <=rr] = 6
+f.size$circle = f.size$circle*f.size$gdie
+circle_map = random_map
+for( j in 1:sum(f.size$circle== 6)){
+circle_map[f.size$yy[(f.size$circle== 6)][j],f.size$xx[(f.size$circle== 6)][j]] = 1
+}
+###############circle
