@@ -42,3 +42,82 @@ scratch_map[f.size$yy[(f.size$scratch == 6)][j],f.size$xx[(f.size$scratch == 6)]
 }
 scratch_map = scratch_map*defect_map 
 ###############scratch
+
+###############Ring
+theta1 = runif(1,0,2*pi)
+theta2 = runif(1,theta1+pi,theta1+2*pi)
+f.size$Ring = f.size$gdie
+addtheta = round((pi/20),3)
+er = runif(1,0,3)
+kk=1
+a = theta1 + addtheta*(kk-1)-floor((theta1 + addtheta*(kk-1))/(2*pi))*2*pi
+b = theta1 + addtheta*kk-floor((theta1 + addtheta*kk)/(2*pi))*2*pi
+err = c(er)
+cd = c(b)
+for( k in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+if( a < b ){
+f.size$Ring[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 6
+a = b
+b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+}else{
+f.size$Ring[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=6
+f.size$Ring[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=6
+a = b
+b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+}
+cd[k] = b
+er = er-er*(er<0)+ sample(-1:1)[1]
+if( er > 3){
+er = 3
+}
+err[k] = er
+}
+theta3 = theta2-(theta2>2*pi)*2*pi
+f.size$Ring[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 6
+
+f.size$Ring = f.size$Ring*f.size$gdie
+Ring_map = defect_map
+for( j in 1:sum(f.size$Ring== 6)){
+Ring_map[f.size$yy[(f.size$Ring==6)][j],f.size$xx[(f.size$Ring==6)][j]] = 1
+}
+
+
+###############Ring
+###############Zone
+theta1 = runif(1,0,2*pi)
+theta2 = runif(1,theta1+pi/5,theta1+pi/2)
+f.size$Zone = f.size$gdie
+addtheta = round((pi/30),3)
+er = runif(1,2,8)
+ll=1
+a = theta1 + addtheta*(ll-1)-floor((theta1 + addtheta*(ll-1))/(2*pi))*2*pi
+b = theta1 + addtheta*ll-floor((theta1 + addtheta*ll)/(2*pi))*2*pi
+err = c(er)
+cd = c(b)
+for( l in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+if( a < b ){
+f.size$Zone[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 6
+a = b
+b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+}else{
+f.size$Zone[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=6
+f.size$Zone[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=6
+a = b
+b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+}
+cd[l] = b
+er = er-er*(er<0) + sample(-2:2)[1]
+err[l] = er
+}
+theta3 = theta2-(theta2>2*pi)*2*pi
+f.size$Zone[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 6
+
+f.size$Zone = f.size$Zone*f.size$gdie
+Zone_map = matrix(0,56,53)
+defect_map = Zone_map
+for( j in 1:sum(f.size$circle == 1)){
+Zone_map[f.size$yy[(f.size$Zone==6)][j],f.size$xx[(f.size$Zone==6)][j]] = 6
+}
+Zone_map = Zone_map*defect_map 
+
+###############Zone
