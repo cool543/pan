@@ -1,0 +1,428 @@
+library(ggplot2)
+rm(list=ls())
+circleFun <- function(center=c(0,0), r=1, npoints=100){
+  tt <- seq(0, 2*pi, length.out=npoints)
+  xx <- center[1] + r * cos(tt)
+  yy <- center[2] + r * sin(tt)
+  return(data.frame(x = xx, y = yy))
+}
+work.path = "macintosh HD/使用者/pan/桌面/"
+r = 26.5
+circle.df <- circleFun(r=r, npoints=2000)
+circle.df$x = circle.df$x+27.5
+circle.df$y = circle.df$y+27.5
+yy = rep(1:56,time = 53)
+xx = rep(1:53,each = 56)
+
+f.size = data.frame(cbind(xx,yy))
+
+Xw = 27
+Yw = 27
+f.size$radius = sqrt((f.size$xx-rep(Xw,53*56))^2+(f.size$yy-rep(Yw,53*56))^2)
+f.size$gdie = 1*(f.size$radius <= 26)
+f.size$theta = atan2(f.size$yy-27, f.size$xx-27)
+f.size$theta[f.size$theta<0] = f.size$theta[f.size$theta<0]+2*pi
+max(f.size$theta)
+min(f.size$theta)
+single = c()
+alpha = 400
+for(sim in 1:900){
+  
+  ###############circle+zone
+  Xc = runif(1,26,32)
+  Yc = runif(1,26,32)
+  r0 = runif(1,3,10)
+  n = rnorm(1,1,1)
+  rr = r0/(1+exp(-n))
+  f.size$circle = f.size$gdie
+  f.size$circle[sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2) <=rr] = 2
+  f.size$circle[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$circle = f.size$circle*f.size$gdie
+  f.size$circle[f.size$circle==1]=0
+  f.size$circle = f.size$circle/2
+  
+  theta1 = runif(1,0,2*pi)
+  theta2 = runif(1,theta1+pi/5,theta1+pi/2)
+  f.size$Zone = f.size$gdie
+  addtheta = round((pi/30),3)
+  er = runif(1,2,8)
+  ll=1
+  a = theta1 + addtheta*(ll-1)-floor((theta1 + addtheta*(ll-1))/(2*pi))*2*pi
+  b = theta1 + addtheta*ll-floor((theta1 + addtheta*ll)/(2*pi))*2*pi
+  err = c(er)
+  cd = c(b)
+  for( l in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+    if( a < b ){
+      f.size$Zone[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 2
+      a = b
+      b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+    }else{
+      f.size$Zone[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=2
+      f.size$Zone[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=2
+      a = b
+      b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+    }
+    cd[l] = b
+    er = er-er*(er<0) + sample(-2:2)[1]
+    err[l] = er
+  }
+  theta3 = theta2-(theta2>2*pi)*2*pi
+  f.size$Zone[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 2
+  f.size$Zone = f.size$Zone*f.size$gdie
+  f.size$Zone[f.size$Zone==1]=0
+  f.size$Zone = f.size$Zone/2
+  f.size$C_Z = f.size$Zone+f.size$circle
+  f.size$C_Z[f.size$C_Z>0]=1
+
+  
+  
+  ###############circle+zone
+  
+  ###############scratch
+  Xc = runif(1,26,32)
+  Yc = runif(1,26,32)
+  r0 = runif(1,3,10)
+  n = rnorm(1,1,1)
+  rr = r0/(1+exp(-n))
+  f.size$circle = f.size$gdie
+  f.size$circle[sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2) <=rr] = 2
+  f.size$circle[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$circle = f.size$circle*f.size$gdie
+  f.size$circle[f.size$circle==1]=0
+  f.size$circle = f.size$circle/2
+  
+  p = runif(1,0,1)
+  q = runif(1,0,1)
+  Xc = runif(1,-53,0)*(p<0.5)+runif(1,53,106)*(p>=0.5)
+  Yc = runif(1,-53,0)*(q<0.5)+runif(1,53,106)*(q>=0.5)
+  Xw = 27
+  Yw = 27
+  theta = atan2((Yw - Yc),(Xw - Xc))+pi
+  theta1 = runif(1,theta-0.3,theta-0.25)
+  theta2 = runif(1,theta+0.3,theta+0.35)
+  
+  s = runif(1,0,1)
+  d = sqrt((Xw-Xc)^2+(Yw-Yc)^2)
+  r = runif(1,d+11,d+24)*(s>0.5)+runif(1,d-24,d-11)*(s<=0.5)
+  f.size$scratch.r = sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2)
+  f.size$scratch.th = atan2(f.size$yy-Yc, f.size$xx-Xc)+pi
+  
+  f.size$scratch = f.size$gdie
+  f.size$scratch[(f.size$scratch.r >= r &
+                    f.size$scratch.r <= (r+1) &
+                    f.size$scratch.th >= theta1 &
+                    f.size$scratch.th <= theta2)] = 2
+  f.size$scratch = f.size$scratch*f.size$gdie
+  f.size$scratch[f.size$scratch==1]=0
+  f.size$scratch = f.size$scratch/2
+  
+  f.size$C_S = f.size$scratch+f.size$circle
+  f.size$C_S[f.size$C_S>0]=1
+  
+  ###############scratch
+  
+  ###############Ring
+  Xc = runif(1,26,32)
+  Yc = runif(1,26,32)
+  r0 = runif(1,3,10)
+  n = rnorm(1,1,1)
+  rr = r0/(1+exp(-n))
+  f.size$circle = f.size$gdie
+  f.size$circle[sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2) <=rr] = 2
+  f.size$circle[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$circle = f.size$circle*f.size$gdie
+  f.size$circle[f.size$circle==1]=0
+  f.size$circle = f.size$circle/2
+  
+  theta1 = runif(1,0,2*pi)
+  theta2 = runif(1,theta1+pi,theta1+2*pi)
+  f.size$Ring = f.size$gdie
+  addtheta = round((pi/20),3)
+  er = runif(1,0,3)
+  kk=1
+  a = theta1 + addtheta*(kk-1)-floor((theta1 + addtheta*(kk-1))/(2*pi))*2*pi
+  b = theta1 + addtheta*kk-floor((theta1 + addtheta*kk)/(2*pi))*2*pi
+  err = c(er)
+  cd = c(b)
+  for( k in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+    if( a < b ){
+      f.size$Ring[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 2
+      a = b
+      b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+    }else{
+      f.size$Ring[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=2
+      f.size$Ring[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=2
+      a = b
+      b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+    }
+    cd[k] = b
+    er = er-er*(er<0)+ sample(-1:1)[1]
+    if( er > 3){
+      er = 3
+    }
+    err[k] = er
+  }
+  theta3 = theta2-(theta2>2*pi)*2*pi
+  f.size$Ring[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 2
+  f.size$Ring = f.size$Ring*f.size$gdie
+  f.size$Ring[f.size$Ring==1]=0
+  f.size$Ring = f.size$Ring/2
+  
+  f.size$C_R = f.size$Ring+f.size$circle
+  f.size$C_R[f.size$C_R>0]=1
+  
+  
+  ###############Ring+circle
+  ###############Ring+Zone
+  theta1 = runif(1,0,2*pi)
+  theta2 = runif(1,theta1+pi,theta1+2*pi)
+  f.size$Ring = f.size$gdie
+  addtheta = round((pi/20),3)
+  er = runif(1,0,3)
+  kk=1
+  a = theta1 + addtheta*(kk-1)-floor((theta1 + addtheta*(kk-1))/(2*pi))*2*pi
+  b = theta1 + addtheta*kk-floor((theta1 + addtheta*kk)/(2*pi))*2*pi
+  err = c(er)
+  cd = c(b)
+  for( k in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+    if( a < b ){
+      f.size$Ring[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 2
+      a = b
+      b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+    }else{
+      f.size$Ring[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=2
+      f.size$Ring[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=2
+      a = b
+      b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+    }
+    cd[k] = b
+    er = er-er*(er<0)+ sample(-1:1)[1]
+    if( er > 3){
+      er = 3
+    }
+    err[k] = er
+  }
+  theta3 = theta2-(theta2>2*pi)*2*pi
+  f.size$Ring[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 2
+  f.size$Ring[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$Ring = f.size$Ring*f.size$gdie
+  f.size$Ring[f.size$Ring==1]=0
+  f.size$Ring = f.size$Ring/2
+  
+  theta1 = runif(1,0,2*pi)
+  theta2 = runif(1,theta1+pi/5,theta1+pi/2)
+  f.size$Zone = f.size$gdie
+  addtheta = round((pi/30),3)
+  er = runif(1,2,8)
+  ll=1
+  a = theta1 + addtheta*(ll-1)-floor((theta1 + addtheta*(ll-1))/(2*pi))*2*pi
+  b = theta1 + addtheta*ll-floor((theta1 + addtheta*ll)/(2*pi))*2*pi
+  err = c(er)
+  cd = c(b)
+  for( l in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+    if( a < b ){
+      f.size$Zone[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 2
+      a = b
+      b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+    }else{
+      f.size$Zone[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=2
+      f.size$Zone[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=2
+      a = b
+      b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+    }
+    cd[l] = b
+    er = er-er*(er<0) + sample(-2:2)[1]
+    err[l] = er
+  }
+  theta3 = theta2-(theta2>2*pi)*2*pi
+  f.size$Zone[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 2
+  f.size$Zone = f.size$Zone*f.size$gdie
+  f.size$Zone[f.size$Zone==1]=0
+  f.size$Zone = f.size$Zone/2
+  
+  f.size$R_Z = f.size$Ring+f.size$Zone
+  f.size$R_Z[f.size$R_Z>0]=1
+  ###############Ring+Zone
+  ###############Scratch+Zone
+  p = runif(1,0,1)
+  q = runif(1,0,1)
+  Xc = runif(1,-53,0)*(p<0.5)+runif(1,53,106)*(p>=0.5)
+  Yc = runif(1,-53,0)*(q<0.5)+runif(1,53,106)*(q>=0.5)
+  Xw = 27
+  Yw = 27
+  theta = atan2((Yw - Yc),(Xw - Xc))+pi
+  theta1 = runif(1,theta-0.3,theta-0.25)
+  theta2 = runif(1,theta+0.3,theta+0.35)
+  
+  s = runif(1,0,1)
+  d = sqrt((Xw-Xc)^2+(Yw-Yc)^2)
+  r = runif(1,d+11,d+24)*(s>0.5)+runif(1,d-24,d-11)*(s<=0.5)
+  f.size$scratch.r = sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2)
+  f.size$scratch.th = atan2(f.size$yy-Yc, f.size$xx-Xc)+pi
+  
+  f.size$scratch = f.size$gdie
+  f.size$scratch[(f.size$scratch.r >= r &
+                    f.size$scratch.r <= (r+1) &
+                    f.size$scratch.th >= theta1 &
+                    f.size$scratch.th <= theta2)] = 2
+  f.size$scratch[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$scratch = f.size$scratch*f.size$gdie
+  f.size$scratch[f.size$scratch==1]=0
+  f.size$scratch = f.size$scratch/2
+  
+  theta1 = runif(1,0,2*pi)
+  theta2 = runif(1,theta1+pi/5,theta1+pi/2)
+  f.size$Zone = f.size$gdie
+  addtheta = round((pi/30),3)
+  er = runif(1,2,8)
+  ll=1
+  a = theta1 + addtheta*(ll-1)-floor((theta1 + addtheta*(ll-1))/(2*pi))*2*pi
+  b = theta1 + addtheta*ll-floor((theta1 + addtheta*ll)/(2*pi))*2*pi
+  err = c(er)
+  cd = c(b)
+  for( l in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+    if( a < b ){
+      f.size$Zone[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 2
+      a = b
+      b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+    }else{
+      f.size$Zone[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=2
+      f.size$Zone[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=2
+      a = b
+      b = theta1 + addtheta*l-floor((theta1 + addtheta*l)/(2*pi))*2*pi
+    }
+    cd[l] = b
+    er = er-er*(er<0) + sample(-2:2)[1]
+    err[l] = er
+  }
+  theta3 = theta2-(theta2>2*pi)*2*pi
+  f.size$Zone[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 2
+  f.size$Zone = f.size$Zone*f.size$gdie
+  f.size$Zone[f.size$Zone==1]=0
+  f.size$Zone = f.size$Zone/2
+  
+  f.size$S_Z = f.size$scratch+f.size$Zone
+  f.size$S_Z[f.size$S_Z>0]=1
+  ###############Scratch+Zone
+  ###############Scratch+Ring
+  p = runif(1,0,1)
+  q = runif(1,0,1)
+  Xc = runif(1,-53,0)*(p<0.5)+runif(1,53,106)*(p>=0.5)
+  Yc = runif(1,-53,0)*(q<0.5)+runif(1,53,106)*(q>=0.5)
+  Xw = 27
+  Yw = 27
+  theta = atan2((Yw - Yc),(Xw - Xc))+pi
+  theta1 = runif(1,theta-0.3,theta-0.25)
+  theta2 = runif(1,theta+0.3,theta+0.35)
+  
+  s = runif(1,0,1)
+  d = sqrt((Xw-Xc)^2+(Yw-Yc)^2)
+  r = runif(1,d+11,d+24)*(s>0.5)+runif(1,d-24,d-11)*(s<=0.5)
+  f.size$scratch.r = sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2)
+  f.size$scratch.th = atan2(f.size$yy-Yc, f.size$xx-Xc)+pi
+  
+  f.size$scratch = f.size$gdie
+  f.size$scratch[(f.size$scratch.r >= r &
+                    f.size$scratch.r <= (r+1) &
+                    f.size$scratch.th >= theta1 &
+                    f.size$scratch.th <= theta2)] = 2
+  f.size$scratch[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$scratch = f.size$scratch*f.size$gdie
+  f.size$scratch[f.size$scratch==1]=0
+  f.size$scratch = f.size$scratch/2
+  
+  theta1 = runif(1,0,2*pi)
+  theta2 = runif(1,theta1+pi,theta1+2*pi)
+  f.size$Ring = f.size$gdie
+  addtheta = round((pi/20),3)
+  er = runif(1,0,3)
+  kk=1
+  a = theta1 + addtheta*(kk-1)-floor((theta1 + addtheta*(kk-1))/(2*pi))*2*pi
+  b = theta1 + addtheta*kk-floor((theta1 + addtheta*kk)/(2*pi))*2*pi
+  err = c(er)
+  cd = c(b)
+  for( k in 2:(floor(( theta2 - theta1 )/addtheta))+1){#k=31
+    if( a < b ){
+      f.size$Ring[ (f.size$theta > a & f.size$theta <= b & f.size$radius > min(25,25-er))] = 2
+      a = b
+      b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+    }else{
+      f.size$Ring[( f.size$theta > a & f.size$theta <= 2*pi & f.size$radius > min(25,25-er))]=2
+      f.size$Ring[( f.size$theta >= 0 & f.size$theta <= b & f.size$radius > min(25,25-er))]=2
+      a = b
+      b = theta1 + addtheta*k-floor((theta1 + addtheta*k)/(2*pi))*2*pi
+    }
+    cd[k] = b
+    er = er-er*(er<0)+ sample(-1:1)[1]
+    if( er > 3){
+      er = 3
+    }
+    err[k] = er
+  }
+  theta3 = theta2-(theta2>2*pi)*2*pi
+  f.size$Ring[ f.size$theta > b & f.size$theta <= theta3 & f.size$radius > min(25,25-er)] = 2
+  f.size$Ring = f.size$Ring*f.size$gdie
+  f.size$Ring[f.size$Ring==1]=0
+  f.size$Ring = f.size$Ring/2
+  
+  f.size$S_R = f.size$scratch+f.size$Ring
+  f.size$S_R[f.size$S_R>0]=1
+  ###############Scratch+Ring
+  head(f.size)
+  single = rbind(f.size$C_Z,f.size$C_R,f.size$C_S,f.size$R_Z,f.size$S_Z,f.size$S_R,single)
+  
+}
+write.csv(single)
+###############Zone
+f.size$x1 = f.size$xx
+f.size$x2 = f.size$x1+1
+f.size$y1 = f.size$yy
+f.size$y2 = f.size$y1+1
+head(f.size)
+
+
+print(ggplot() + geom_polygon(data=circle.df, aes(x, y, group=1), fill="#40A0A0", colour="black") +
+        geom_rect(data=f.size[f.size$S_R > 0,], mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, group=1), fill="white", colour="black") +
+        geom_rect(data=f.size[f.size$S_R== 1,], mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, group=1), fill="#000000", colour="black") +
+        #scale_shape_manual(values = c("Y"=24, "N"=21)) +
+        #guides(fill=guide_legend(override.aes=list(shape=21))) +
+        coord_cartesian(xlim=c(-r, r), ylim=c(-r, r)) + coord_fixed() +
+        #labs(x=NULL, y=NULL, title=plot.title, caption=plot.caption) +
+        theme_bw() +
+        scale_fill_manual(values=c("NA" = "#666666",
+                                   "Die" = "#FFFFFF",
+                                   "0" = "#000000",
+                                   "1" = "#FF0033",
+                                   "2" = "#0000FF",
+                                   "3" = "#006600",
+                                   "4" = "#FF3300",
+                                   "5" = "#CCCC00",
+                                   "6" = "#9900FF",
+                                   "7" = "#99FF33",
+                                   "8" = "#993300",
+                                   "9" = "#9999CC",
+                                   "10" = "#CCFFFF",
+                                   "11" = "#CC6666",
+                                   "12" = "#00CC00",
+                                   "13" = "#336633",
+                                   "14" = rainbow(50)[1], "15" = rainbow(50)[2], "16" = rainbow(50)[3], "17" = rainbow(50)[4],
+                                   "18" = rainbow(50)[5], "19" = rainbow(50)[6], "20" = rainbow(50)[7], "21" = rainbow(50)[8],
+                                   "22" = rainbow(50)[9], "23" = rainbow(50)[10], "24" = rainbow(50)[11], "25" = rainbow(50)[12],
+                                   "26" = rainbow(50)[13], "27" = rainbow(50)[14], "28" = rainbow(50)[15], "29" = rainbow(50)[16],
+                                   "30" = rainbow(50)[17], "31" = rainbow(50)[18], "32" = rainbow(50)[19], "33" = rainbow(50)[20],
+                                   "34" = rainbow(50)[21], "35" = rainbow(50)[22], "36" = rainbow(50)[23], "37" = rainbow(50)[24],
+                                   "38" = rainbow(50)[25], "39" = rainbow(50)[26], "40" = rainbow(50)[27], "41" = rainbow(50)[28],
+                                   "42" = rainbow(50)[29], "43" = rainbow(50)[30], "44" = rainbow(50)[31], "45" = rainbow(50)[32],"46" = rainbow(50)[33], "47" = rainbow(50)[34], "48" = rainbow(50)[35], "49" = rainbow(50)[36],
+                                   "50" = rainbow(50)[37], "51" = rainbow(50)[38], "52" = rainbow(50)[39], "53" = rainbow(50)[40],
+                                   "54" = rainbow(50)[41], "55" = rainbow(50)[42], "56" = rainbow(50)[43], "57" = rainbow(50)[44],
+                                   "58" = rainbow(50)[45], "59" = rainbow(50)[46], "60" = rainbow(50)[47], "61" = rainbow(50)[48],
+                                   "62" = rainbow(50)[49], "63" = rainbow(50)[50]),
+                          name = "Cluster") +
+        theme(axis.text.x = element_blank(),
+              axis.text.y = element_blank(),
+              plot.title = element_text(size=16, face="bold"),
+              plot.caption = element_text(size=12, face="bold"),
+              legend.title = element_text(size=14, face="bold"),
+              legend.text = element_text(size=14, face="bold"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank()))
