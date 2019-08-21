@@ -12,3 +12,33 @@ for( j in 1:sum(f.size$circle== 6)){
 circle_map[f.size$yy[(f.size$circle== 6)][j],f.size$xx[(f.size$circle== 6)][j]] = 1
 }
 ###############circle
+
+###############scratch
+p = runif(1,0,1)
+q = runif(1,0,1)
+Xc = runif(1,-53,0)*(p<0.5)+runif(1,53,106)*(p>=0.5)
+Yc = runif(1,-53,0)*(q<0.5)+runif(1,53,106)*(q>=0.5)
+Xw = 27
+Yw = 27
+theta = atan2((Yw - Yc),(Xw - Xc))+pi
+theta1 = runif(1,theta-0.3,theta-0.25)
+theta2 = runif(1,theta+0.3,theta+0.35)
+
+s = runif(1,0,1)
+d = sqrt((Xw-Xc)^2+(Yw-Yc)^2)
+r = runif(1,d+11,d+24)*(s>0.5)+runif(1,d-24,d-11)*(s<=0.5)
+f.size$scratch.r = sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2)
+f.size$scratch.th = atan2(f.size$yy-Yc, f.size$xx-Xc)+pi
+
+f.size$scratch = f.size$gdie
+f.size$scratch[(f.size$scratch.r >= r &
+f.size$scratch.r <= (r+1) &
+f.size$scratch.th >= theta1 &
+f.size$scratch.th <= theta2)] = 6
+f.size$scratch = f.size$scratch*f.size$gdie
+scratch_map = defect_map
+for( j in 1:sum(f.size$scratch == 6)){
+scratch_map[f.size$yy[(f.size$scratch == 6)][j],f.size$xx[(f.size$scratch == 6)][j]] = 6
+}
+scratch_map = scratch_map*defect_map 
+###############scratch
