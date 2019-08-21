@@ -121,3 +121,7 @@ Zone_map[f.size$yy[(f.size$Zone==6)][j],f.size$xx[(f.size$Zone==6)][j]] = 6
 Zone_map = Zone_map*defect_map 
 
 ###############Zone
+f.size$x1 = f.size$xx
+f.size$x2 = f.size$x1+1
+f.size$y1 = f.size$yy
+f.size$y2 = f.size$y1+1
