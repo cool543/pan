@@ -1,0 +1,66 @@
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/circle/single.csv"))
+bb = read.csv(paste0(work.path,"sim/circle/double.csv"))
+cc = read.csv(paste0(work.path,"sim/circle/mix.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/circle/","circle_train.csv"),row.names = F)
+
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/zone/single.csv"))
+bb = read.csv(paste0(work.path,"sim/zone/double.csv"))
+cc = read.csv(paste0(work.path,"sim/zone/mix.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/zone/","zone_train.csv"),row.names = F)
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/ring/single.csv"))
+bb = read.csv(paste0(work.path,"sim/ring/double.csv"))
+cc = read.csv(paste0(work.path,"sim/ring/mix.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/ring/","ring_train.csv"),row.names = F)
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/scratch/single.csv"))
+bb = read.csv(paste0(work.path,"sim/scratch/double.csv"))
+cc = read.csv(paste0(work.path,"sim/scratch/mix.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/scratch/","scratch_train.csv"),row.names = F)
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/circle/single - test.csv"))
+bb = read.csv(paste0(work.path,"sim/circle/double - test.csv"))
+cc = read.csv(paste0(work.path,"sim/circle/mix - test.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/circle/","circle_test.csv"),row.names = F)
+
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/zone/single - test.csv"))
+bb = read.csv(paste0(work.path,"sim/zone/double - test.csv"))
+cc = read.csv(paste0(work.path,"sim/zone/mix - test.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/zone/","zone_test.csv"),row.names = F)
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/ring/single - test.csv"))
+bb = read.csv(paste0(work.path,"sim/ring/double - test.csv"))
+cc = read.csv(paste0(work.path,"sim/ring/mix - test.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/ring/","ring_test.csv"),row.names = F)
+
+work.path = "C:/Users/55-0A40438-91/PycharmProjects/MLDemo/"
+aa = read.csv(paste0(work.path,"sim/scratch/single - test.csv"))
+bb = read.csv(paste0(work.path,"sim/scratch/double - test.csv"))
+cc = read.csv(paste0(work.path,"sim/scratch/mix - test.csv"))
+dd = rbind(aa,bb,cc)
+dim(dd)
+write.csv(dd,paste0(work.path,"sim/scratch/","scratch_test.csv"),row.names = F)
+
