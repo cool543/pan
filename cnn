@@ -1,0 +1,105 @@
+# core and utility packages
+import pandas as pd
+import numpy as np
+import itertools
+import keras
+
+
+# visualization
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import seaborn as sns
+%matplotlib inline
+
+# Load the data
+train = pd.read_csv("ring_train.csv")
+test = pd.read_csv("ring_test.csv")
+train.head()
+
+Y_train = train["V1"]
+Y_test = test["V1"]
+X_train = train.drop(labels = ["V1"],axis = 1) 
+test = test.drop(labels = ["V1"],axis = 1) 
+X_train.shape
+
+X_train.shape
+
+X_train = X_train.values.reshape(-1,53,56,1)
+test = test.values.reshape(-1,53,56,1)
+print(X_train)
+print(test)
+
+X_train.shape
+
+test.shape
+
+from keras.utils import to_categorical
+Y_train = to_categorical(Y_train, num_classes=2)
+Y_test = to_categorical(Y_train, num_classes=2)
+
+from keras.models import Sequential
+from keras.layers import Dense,Conv2D,MaxPool2D,Flatten,Dropout
+cnn=Sequential()
+cnn.add(Conv2D(filters=32,
+               kernel_size=(5,5),
+               input_shape=(53,56,1),
+               activation="relu",
+               padding="same")) #3(RGB共3個特徵)*3*3(3*3過濾器)*32(過濾器)+32(bias 激活個數)
+cnn.add(MaxPool2D(pool_size=(2,2)))#池化
+cnn.add(Conv2D(filters=64,
+               kernel_size=(3,3),
+               activation="relu",
+               padding="same"))#32(32個特徵)*3*3(3*3過濾器)*64(過濾器)+64(bias 激活個數)
+###後面沒有再加卷積就沒必要再池化
+cnn.add(MaxPool2D(pool_size=(2,2),strides=2))#池化
+cnn.add(Conv2D(filters=128,
+               kernel_size=(3,3),
+               activation="relu",
+               padding="same"))#32(32個特徵)*3*3(3*3過濾器)*64(過濾器)+64(bias 激活個數)
+cnn.add(MaxPool2D(pool_size=(2,2)))#池化
+
+cnn.add(Flatten())###MLP前要先展平
+#cnn.add(Dense(units=1024,activation="relu"))##原本一萬多減一個位數取1000多
+#cnn.add(Dense(units=128,activation="relu"))
+#cnn.add(Dense(units=10,activation="softmax"))
+
+cnn.add(Dense(units=625,activation="relu")) ###為了隨機dropout數量才增多一點
+cnn.add(Dropout(0.5))
+cnn.add(Dense(units=2,activation="softmax"))
+
+
+cnn.summary()
+
+cnn.compile(loss="categorical_crossentropy",
+              optimizer="adam",
+              metrics=["accuracy"])
+
+train_history=cnn.fit(X_train,Y_train,batch_size=256,epochs=40,
+          validation_split=0.1,verbose=2)##verbose 是否印出log  2表示印出重要log即可不用太詳細
+#validation loss 沒平坦 epochs就要再加
+
+plt.plot(train_history.history["loss"])
+plt.plot(train_history.history["val_loss"])
+plt.legend(["Loss","VAL Loss"],loc="upper left")
+
+plt.plot(train_history.history["acc"])
+plt.plot(train_history.history["val_acc"])
+plt.legend(["acc","val_acc"],loc="upper left")
+
+predictions = cnn.predict_classes(test, verbose=1)
+test1 = pd.read_csv("ring_test.csv")
+
+dataframe = pd.DataFrame({'a_name':predictions,'b_name':test1["V1"]})
+#將DataFrame儲存為csv,index表示是否顯示行名，default=True
+dataframe.to_csv("predictions_ring.csv",index=False,sep=',')
+
+#https://support.hdfgroup.org/products/java/
+cnn.save("ring.h5")
+
+from keras.models import load_model
+loadcnn=load_model("ring.h5")
+loadcnn.compile(loss="categorical_crossentropy",
+              optimizer="adam",
+              metrics=["accuracy"])
+              
+predictions = loadcnn.predict_classes(test, verbose=1)
