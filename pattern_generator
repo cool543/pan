@@ -1,0 +1,30 @@
+library(ggplot2)
+rm(list=ls())
+work.path = "D:/statistic method/Defect CNN/"
+
+pattern_func = function(type,random){
+yy = rep(1:53,time = 53)
+xx = rep(1:53,each = 53)
+Xw = 27
+Yw = 27
+f.size = data.frame(cbind(xx,yy))
+f.size$radius = sqrt((f.size$xx-rep(Xw,53*53))^2+(f.size$yy-rep(Yw,53*53))^2)
+f.size$gdie = 1*(f.size$radius <= 26)
+f.size$theta = atan2(f.size$yy-27, f.size$xx-27)
+f.size$theta[f.size$theta<0] = f.size$theta[f.size$theta<0]+2*pi
+if(type == 0){
+Xc = runif(1,22,32)
+Yc = runif(1,22,32)
+r0 = runif(1,3,10)
+n = rnorm(1,1,1)
+rr = max(3,r0/(1+exp(-n))) 
+r_tmp[i] = rr
+f.size$circle = f.size$gdie
+f.size$circle[sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2) <=rr] = 2
+if( random == 1 ){
+f.size$circle[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+}
+f.size$circle = f.size$circle*f.size$gdie
+f.size$circle[f.size$circle==1]=0
+f.size$circle = f.size$circle/2
+}
