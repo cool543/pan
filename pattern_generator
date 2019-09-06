@@ -123,14 +123,3 @@ f.size$y1 = f.size$yy-0.5
 f.size$y2 = f.size$y1+1
 return(f.size)
 }
-
-circleFun <- function(center=c(0,0), r=1, npoints=100){
-  tt <- seq(0, 2*pi, length.out=npoints)
-  xx <- center[1] + r * cos(tt)
-  yy <- center[2] + r * sin(tt)
-  return(data.frame(x = xx, y = yy))
-}
-
-circle.df <- circleFun(r=26+sqrt(2)/2, npoints=2000)
-circle.df$x = circle.df$x+27
-circle.df$y = circle.df$y+27
