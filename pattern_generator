@@ -2,7 +2,8 @@ library(ggplot2)
 rm(list=ls())
 work.path = "D:/statistic method/Defect CNN/"
 
-pattern_func = function(type,random){
+pattern_func = function(type){
+alpha = 100
 yy = rep(1:53,time = 53)
 xx = rep(1:53,each = 53)
 Xw = 27
@@ -18,12 +19,9 @@ Yc = runif(1,22,32)
 r0 = runif(1,3,10)
 n = rnorm(1,1,1)
 rr = max(3,r0/(1+exp(-n))) 
-r_tmp[i] = rr
 f.size$circle = f.size$gdie
 f.size$circle[sqrt((Xc-f.size$xx)^2+(Yc-f.size$yy)^2) <=rr] = 2
-if( random == 1 ){
 f.size$circle[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
-}
 f.size$circle = f.size$circle*f.size$gdie
 f.size$circle[f.size$circle==1]=0
 f.size$circle = f.size$circle/2
@@ -50,6 +48,7 @@ if(type == 1){
                     f.size$scratch.th >= theta1 &
                     f.size$scratch.th <= theta2)] = 2
   #f.size$scratch[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$scratch[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
   f.size$scratch = f.size$scratch*f.size$gdie
   f.size$scratch[f.size$scratch==1]=0
   f.size$scratch = f.size$scratch/2
@@ -80,7 +79,7 @@ if(type == 2){
   er[er>3] = 3
   er[er<0] = 0
   }
-  #f.size$Ring[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$Ring[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
   f.size$Ring = f.size$Ring*f.size$gdie
   f.size$Ring[f.size$Ring==1]=0
   f.size$Ring = f.size$Ring/2
@@ -111,7 +110,7 @@ if(type == 3){
   er[er>8] = 8
   er[er<3] = 3
   }
-  #f.size$Zone[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+  f.size$Zone[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
   f.size$Zone= f.size$Zone*f.size$gdie
   f.size$Zone[f.size$Zone==1]=0
   f.size$Zone= f.size$Zone/2
@@ -123,3 +122,12 @@ f.size$y1 = f.size$yy-0.5
 f.size$y2 = f.size$y1+1
 return(f.size)
 }
+#0:circle / 1:scratch  / 2:Ring / 3:Zone
+
+for( i in 1:900){
+aa = pattern_func(1)
+aa[1,]
+max(aa$yy)
+max(aa$yy)
+
+work.path = "D:/statistic method/Defect CNN/"
