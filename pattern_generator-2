@@ -1,0 +1,49 @@
+print(ggplot() + 
+        #geom_polygon(data=circle.df2, aes(x, y, group=1), fill="#40A0A0", colour="black") +
+        geom_rect(data=aa[aa[,8] >= 0,], mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, group=1), fill="white", colour="white") +
+        geom_rect(data=aa[aa[,8] == 1,], mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, group=1), fill="#000000", colour="black") +
+        #scale_shape_manual(values = c("Y"=24, "N"=21)) +
+        #guides(fill=guide_legend(override.aes=list(shape=21))) +
+        #coord_cartesian(xlim=c(0, 54), ylim=c(0, 54)) + coord_fixed() +
+        #labs(x=NULL, y=NULL, title=plot.title, caption=plot.caption) +
+        theme_bw() +
+        scale_fill_manual(values=c("NA" = "#666666",
+                                   "Die" = "#FFFFFF",
+                                   "0" = "#000000",
+                                   "1" = "#FF0033",
+                                   "2" = "#0000FF",
+                                   "3" = "#006600",
+                                   "4" = "#FF3300",
+                                   "5" = "#CCCC00",
+                                   "6" = "#9900FF",
+                                   "7" = "#99FF33",
+                                   "8" = "#993300",
+                                   "9" = "#9999CC",
+                                   "10" = "#CCFFFF",
+                                   "11" = "#CC6666",
+                                   "12" = "#00CC00",
+                                   "13" = "#336633",
+                                   "14" = rainbow(50)[1], "15" = rainbow(50)[2], "16" = rainbow(50)[3], "17" = rainbow(50)[4],
+                                   "18" = rainbow(50)[5], "19" = rainbow(50)[6], "20" = rainbow(50)[7], "21" = rainbow(50)[8],
+                                   "22" = rainbow(50)[9], "23" = rainbow(50)[10], "24" = rainbow(50)[11], "25" = rainbow(50)[12],
+                                   "26" = rainbow(50)[13], "27" = rainbow(50)[14], "28" = rainbow(50)[15], "29" = rainbow(50)[16],
+                                   "30" = rainbow(50)[17], "31" = rainbow(50)[18], "32" = rainbow(50)[19], "33" = rainbow(50)[20],
+                                   "34" = rainbow(50)[21], "35" = rainbow(50)[22], "36" = rainbow(50)[23], "37" = rainbow(50)[24],
+                                   "38" = rainbow(50)[25], "39" = rainbow(50)[26], "40" = rainbow(50)[27], "41" = rainbow(50)[28],
+                                   "42" = rainbow(50)[29], "43" = rainbow(50)[30], "44" = rainbow(50)[31], "45" = rainbow(50)[32],"46" = rainbow(50)[33], "47" = rainbow(50)[34], "48" = rainbow(50)[35], "49" = rainbow(50)[36],
+                                   "50" = rainbow(50)[37], "51" = rainbow(50)[38], "52" = rainbow(50)[39], "53" = rainbow(50)[40],
+                                   "54" = rainbow(50)[41], "55" = rainbow(50)[42], "56" = rainbow(50)[43], "57" = rainbow(50)[44],
+                                   "58" = rainbow(50)[45], "59" = rainbow(50)[46], "60" = rainbow(50)[47], "61" = rainbow(50)[48],
+                                   "62" = rainbow(50)[49], "63" = rainbow(50)[50]),
+                          name = "Cluster") +
+        theme(axis.text.x = element_blank(),
+              axis.text.y = element_blank(),
+              plot.title = element_text(size=16, face="bold"),
+              plot.caption = element_text(size=12, face="bold"),
+              legend.title = element_text(size=14, face="bold"),
+              legend.text = element_text(size=14, face="bold"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank()))
+
+dev.off()
+}
