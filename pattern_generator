@@ -134,3 +134,4 @@ work.path = "D:/statistic method/Defect CNN/"
 
 jpeg(paste0(work.path,"simulation/scratch/",i,".jpeg"), quality = 100, width = 512, height = 512)
 
+print(ggplot() + 
