@@ -1,0 +1,66 @@
+tmp = c()
+
+par_mat=matrix(c(
+0,0,0,0,
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1,
+1,1,0,0,
+1,0,1,0,
+1,0,0,1,
+0,1,1,0,
+0,1,0,1,
+0,0,1,1,
+1,1,1,0,
+1,0,1,1,
+1,1,0,1,
+0,1,1,1,
+1,1,1,1),2400,4,byrow=T)
+
+input2 = par_mat[sample(1:2400),]
+tmp=c()
+x1=c()
+x2=c()
+y1=c()
+y2=c()
+for( i in 1:2400){
+aa = pattern_func(input[i,],100)
+tmp = rbind(tmp,aa$pattern)
+x1 = rbind(x1,aa$x1)
+x2 = rbind(x2,aa$x2)
+y1 = rbind(y1,aa$y1)
+y2 = rbind(y2,aa$y2)
+}
+i
+tmp[1,]
+write.csv(tmp,paste0(work.path,"sim/","5.csv"),row.names = F)
+write.csv(x1,paste0(work.path,"sim/","x15.csv"),row.names = F)
+write.csv(x2,paste0(work.path,"sim/","x25.csv"),row.names = F)
+write.csv(y1,paste0(work.path,"sim/","y15.csv"),row.names = F)
+write.csv(y2,paste0(work.path,"sim/","y25.csv"),row.names = F)
+write.csv(input2,paste0(work.path,"sim/","input2.csv"),row.names = F)
+
+
+work.path = "D:/statistic method/Defect CNN/"
+aa = read.csv(paste0(work.path,"sim/","1.csv"))
+bb = read.csv(paste0(work.path,"sim/","2.csv"))
+cc = read.csv(paste0(work.path,"sim/","3.csv"))
+dd = read.csv(paste0(work.path,"sim/","4.csv"))
+input = read.csv(paste0(work.path,"sim/","input.csv"))
+input[1:20,]
+ee = rbind(aa,bb,cc,dd)
+
+write.csv(cbind(input[,1],ee),paste0(work.path,"sim/","traincircle.csv"),row.names = F)
+write.csv(cbind(input[,2],ee),paste0(work.path,"sim/","trainscratch.csv"),row.names = F)
+write.csv(cbind(input[,3],ee),paste0(work.path,"sim/","trainring.csv"),row.names = F)
+write.csv(cbind(input[,4],ee),paste0(work.path,"sim/","trainzone.csv"),row.names = F)
+
+
+aa = read.csv(paste0(work.path,"sim/","testdata.csv"))
+input2 = read.csv(paste0(work.path,"sim/","input2.csv"))
+write.csv(cbind(input2[,1],aa),paste0(work.path,"sim/","testdata.csv"),row.names = F)
+
+
+
+
