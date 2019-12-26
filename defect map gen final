@@ -1,0 +1,77 @@
+#0:circle / 1:scratch  / 2:Ring / 3:Zone
+
+work.path = "D:/statistic method/Defect CNN/sim_data/"
+
+par_mat=matrix(c(
+0,0,0,0,
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1,
+1,1,0,0,
+1,0,1,0,
+1,0,0,1,
+0,1,1,0,
+0,1,0,1,
+0,0,1,1,
+1,1,1,0,
+1,0,1,1,
+1,1,0,1,
+0,1,1,1,
+1,1,1,1),4800,4,byrow=T)
+input = par_mat[sample(1:4800),]
+tmp=c()
+for( i in 1:4800){
+aa = pattern_func(input[i,],400)
+tmp = rbind(tmp,aa$pattern)
+}
+write.csv(tmp,paste0(work.path,"sim/400","1.csv"),row.names = F)
+write.csv(input,paste0(work.path,"sim/400","input1.csv"),row.names = F)
+
+
+input = par_mat[sample(1:4800),]
+tmp=c()
+for( i in 1:4800){
+aa = pattern_func(input[i,],400)
+tmp = rbind(tmp,aa$pattern)
+}
+write.csv(tmp,paste0(work.path,"sim/400","2.csv"),row.names = F)
+write.csv(input,paste0(work.path,"sim/400","input2.csv"),row.names = F)
+
+input = par_mat[sample(1:4800),]
+tmp=c()
+for( i in 1:4800){
+aa = pattern_func(input[i,],400)
+tmp = rbind(tmp,aa$pattern)
+}
+write.csv(tmp,paste0(work.path,"sim/400","3.csv"),row.names = F)
+write.csv(input,paste0(work.path,"sim/400","input3.csv"),row.names = F)
+
+
+par_mat=matrix(c(
+0,0,0,0,
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1,
+1,1,0,0,
+1,0,1,0,
+1,0,0,1,
+0,1,1,0,
+0,1,0,1,
+0,0,1,1,
+1,1,1,0,
+1,0,1,1,
+1,1,0,1,
+0,1,1,1,
+1,1,1,1),2400,4,byrow=T)
+input = par_mat[sample(1:2400),]
+tmp=c()
+for( i in 1:4800){
+aa = pattern_func(input[i,],400)
+tmp = rbind(tmp,aa$pattern)
+}
+write.csv(tmp,paste0(work.path,"sim/400","4.csv"),row.names = F)
+write.csv(input,paste0(work.path,"sim/400","input4.csv"),row.names = F)
+
+
