@@ -1,0 +1,15 @@
+
+f.size$x1 = f.size$xx-0.5
+f.size$x2 = f.size$x1+1
+f.size$y1 = f.size$yy-0.5
+f.size$y2 = f.size$y1+1
+f.size$circle[sample(which(f.size$circle == 1),floor(sum(f.size$circle)*runif(1,0,0.5)))] = 0
+f.size$scratch[sample(which(f.size$scratch == 1),floor(sum(f.size$scratch )*runif(1,0,0.5)))] = 0
+f.size$Ring[sample(which(f.size$Ring == 1),floor(sum(f.size$Ring )*runif(1,0,0.5)))] = 0
+f.size$Zone[sample(which(f.size$Zone == 1),floor(sum(f.size$Zone )*runif(1,0,0.5)))] = 0
+
+f.size$pattern = f.size$circle + f.size$scratch + f.size$Ring + f.size$Zone 
+f.size$pattern[sample(which(f.size$gdie == 1),abs(floor(rnorm(1,alpha, 50))))] = 2
+f.size$pattern = f.size$pattern*f.size$gdie
+f.size$pattern = 1*(f.size$pattern>0)
+return(f.size)
