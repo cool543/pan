@@ -1,0 +1,81 @@
+#0:circle / 1:scratch  / 2:Ring / 3:Zone
+
+circleFun <- function(center=c(0,0), r=1, npoints=100){
+  tt <- seq(0, 2*pi, length.out=npoints)
+  xx <- center[1] + r * cos(tt)
+  yy <- center[2] + r * sin(tt)
+  return(data.frame(x = xx, y = yy))
+}
+
+set.seed(1)
+#0:circle / 1:scratch  / 2:Ring / 3:Zone
+library(dbscan)
+library(dplyr)
+library(ggplot2)
+work.path = "D:/statistic method/Defect CNN/realdata/"
+
+par_mat1=matrix(c(
+0,0,0,0,
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1,
+1,1,0,0,
+1,0,1,0,
+1,0,0,1,
+0,1,1,0,
+0,1,0,1,
+0,0,1,1,
+1,1,1,0,
+1,1,0,1,
+1,0,1,1,
+0,1,1,1,
+1,1,1,1),12000,4,byrow=T)
+par_mat2=matrix(c(
+0,0,0,0),1500,4,byrow=T)
+par_mat = rbind(par_mat1,par_mat2)
+
+randomdef = c(rep(200,12000),rep(400,375),rep(600,375),rep(800,375),rep(1000,375))
+index = sample(1:13500)
+circle.df <- circleFun(r=26, npoints=2000)
+circle.df$x = circle.df$x+27
+circle.df$y = circle.df$y+27
+tmp=c()
+re.set = rep(0,13500)
+for( i in 1:13500){#i=4
+data.df = pattern_func(par_mat[i,],randomdef[i])
+#data.df = f.size
+#head(data.df)
+if( par_mat[i,2]==1 & par_mat[i,1]+par_mat[i,3] > 0 ){
+check1 = sum(data.df$circle + data.df$scratch == 2)/sum(data.df$scratch)
+check2 = sum(data.df$Ring + data.df$scratch == 2)/sum(data.df$scratch)
+if(check1 >= 0.7 | check2 >= 0.7){
+par_mat[i,2]=0
+re.set[i] = 1
+}
+
+}
+
+#data.df = pattern_func(c(0,1,0,0),100)
+if( sum(data.df$pattern ==1 ) == 0){
+data.df = pattern_func(par_mat[i,],200)
+}
+
+jpeg(paste0(work.path,"training-4pattern/",index[i],"_",par_mat[i,1],par_mat[i,2],par_mat[i,3],max(par_mat[i,4]-par_mat[i,3],0),".jpeg"), quality = 100, width = 100, height = 100)
+
+print(ggplot() + 
+          geom_polygon(data=circle.df, aes(x, y, group=1), fill="white", colour="white") +
+          geom_rect(data=data.df[data.df$pattern ==1,], mapping=aes(xmin=xx-0.5, xmax=xx+.5, ymin=yy-.5, ymax=yy+.5, group = 1), fill="black", colour="black") +
+          theme_bw()+
+          theme(panel.background=element_rect(fill='white', color="white"),
+          panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_blank(),
+          plot.margin=unit(rep(0,4),'lines'),
+          axis.title.y=element_blank(),
+          axis.title.x=element_blank()))
+
+dev.off()
+
+}
+
