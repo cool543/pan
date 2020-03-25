@@ -1,0 +1,6 @@
+addtheta = round((pi/36),3)
+theta1 = runif(1,0,2*pi)
+theta2 = mod(runif(1,theta1+pi,theta1+2*pi),2*pi)
+nk = floor((theta2-theta1)/addtheta)+1
+sample(-1:1,nk,replace = T)
+26-sample(-1:1,nk,replace = T)
